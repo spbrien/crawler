@@ -109,6 +109,8 @@ class Crawler():
                             key: text_content_for_key(html, value)
                             for key, value in v.items()
                         }
+                        out[item]['_source'] = html.html
+                        out[item]['_meta'] = [i.html for i in html.find('meta')]
                     except:
                         pass
             echo(style("* * *", fg='white', bold=True))
