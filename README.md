@@ -48,7 +48,7 @@ The output from the above config should be:
 
 ```JSON
 {
-    "^http://www.example.com/$": {
+    "http://www.example.com/": {
         "title": "Example Domain",
         "text": "This domain is established to be used for illustrative examples in documents. You may use this domain in examples without prior coordination or asking for permission."
     }
