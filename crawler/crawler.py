@@ -44,8 +44,20 @@ class Crawler():
         return r.html
 
     def find_from_json(self, json_data=None):
+        def text_content_for_key(value):
+            if not isinstance(value, dict):
+                return [
+                    {
+                        "text": i.text,
+                        "html": i.html
+                    } for i in html.find(value)
+                ]
+            else:
+                pass
+
         data = self.json_data if self.json_data else self._parse(json_data)
         out = {}
+
         for k, v in data.items():
             # Match all elements from self.links with regex in k
             reg = re.compile('%s' % k)
@@ -56,9 +68,8 @@ class Crawler():
                     try:
                         html = self._get(item)
                         out[item] = {
-                            key: [
-                                i.text for i in html.find(value)
-                            ] for key, value in v.items()
+                            key: text_content_for_key(value)
+                            for key, value in v.items()
                         }
                     except:
                         pass
