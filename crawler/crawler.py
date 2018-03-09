@@ -4,6 +4,7 @@ import os
 import json
 import re
 
+from click import echo, style
 from requests_html import HTMLSession
 
 from crawler.async_links import get_all_links
@@ -17,10 +18,11 @@ class Crawler():
     json_data = None
     links = None
 
-    def __init__(self, base_url, json_data=None, refresh=False):
+    def __init__(self, base_url, json_data=None, refresh=False, format_out=True):
         self.session = HTMLSession()
         self.json_data = self._parse(json_data) if json_data else None
         self.links = self._get_links(base_url, refresh=refresh)
+        self.format_out = format_out
 
 
     def _get_links(self, base_url, refresh=False):
@@ -66,18 +68,29 @@ class Crawler():
                         "text": i.text,
                         "html": i.html
                     } for i in html.find(value)
+                ] if not self.format_out else [
+                    i.text for i in html.find(value)
                 ]
             else:
                 children = value['children']
                 selector = value['selector']
-                return [{
-                    "text": i.text,
-                    "html": i.html,
-                    "children": {
-                        key: text_content_for_key(i, value)
-                        for key, value in children.items()
-                    }
-                } for i in html.find(selector)]
+                return [
+                    {
+                        "text": i.text,
+                        "html": i.html,
+                        "children": {
+                            key: text_content_for_key(i, value)
+                            for key, value in children.items()
+                        }
+                    } for i in html.find(selector)
+                ] if not self.format_out else [
+                    {
+                        "children": {
+                            key: text_content_for_key(i, value)
+                            for key, value in children.items()
+                        }
+                    } for i in html.find(selector)
+                ]
 
         data = self.json_data if self.json_data else self._parse(json_data)
         out = {}
@@ -90,6 +103,7 @@ class Crawler():
             if len(key_list) > 0:
                 for item in key_list:
                     try:
+                        echo(style("[-] Crawling %s", bold=False) % item)
                         html = self._get(item)
                         out[item] = {
                             key: text_content_for_key(html, value)
@@ -97,9 +111,10 @@ class Crawler():
                         }
                     except:
                         pass
+            echo(style("* * *", fg='white', bold=True))
         return {
             k: {
                 key: transform_lists_and_nested(value)
                 for key, value in v.items()
             } for k, v in out.items()
-        }
+        } if self.format_out else out
