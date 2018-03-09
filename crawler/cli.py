@@ -13,14 +13,22 @@ from crawler.crawler import Crawler
 @click.argument('base_url')
 @click.option('-c', '--config', help='JSON config file')
 @click.option('-o', '--output', help='Data output file')
+@click.option('-s', '--scripts', is_flag=True, default=False, help='Render javascript')
 @click.option('-r', '--raw', is_flag=True, default=True, help='Output raw data')
-def main(base_url, config, output, raw):
+@click.option('-x', '--clear', is_flag=True, default=False, help='Clears url cache')
+def main(base_url, config, output, scripts, raw, clear):
     click.echo(click.style('\n[+] Getting data from %s\n' % base_url, fg='white', bold=True))
 
     with open(config, 'r') as f:
         json_data = f.read()
 
-    c = Crawler(base_url, json_data=json_data, format_out=raw)
+    c = Crawler(
+        base_url,
+        refresh=clear,
+        render=scripts,
+        json_data=json_data,
+        format_out=raw
+    )
     data = json.dumps(c.find_from_json(), indent=4)
 
     with open(output, 'w') as f:

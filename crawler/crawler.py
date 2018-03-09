@@ -18,11 +18,12 @@ class Crawler():
     json_data = None
     links = None
 
-    def __init__(self, base_url, json_data=None, refresh=False, format_out=True):
+    def __init__(self, base_url, json_data=None, render=False, refresh=False, format_out=True):
         self.session = HTMLSession()
         self.json_data = self._parse(json_data) if json_data else None
         self.links = self._get_links(base_url, refresh=refresh)
         self.format_out = format_out
+        self.render = render
 
 
     def _get_links(self, base_url, refresh=False):
@@ -42,7 +43,8 @@ class Crawler():
 
     def _get(self, url):
         r = self.session.get(url)
-        r.html.render()
+        if self.render:
+            r.html.render()
         return r.html
 
     def find_from_json(self, json_data=None):
@@ -109,8 +111,9 @@ class Crawler():
                             key: text_content_for_key(html, value)
                             for key, value in v.items()
                         }
-                        out[item]['_source'] = html.html
-                        out[item]['_meta'] = [i.html for i in html.find('meta')]
+                        if not self.format_out:
+                            out[item]['_source'] = html.html
+                            out[item]['_meta'] = [i.html for i in html.find('meta')]
                     except:
                         pass
             echo(style("* * *", fg='white', bold=True))
