@@ -13,7 +13,10 @@ with open('HISTORY.rst') as history_file:
 
 requirements = [
     'Click>=6.0',
-    'requests-html'
+    'requests-html',
+    'aiohttp',
+    'asyncio',
+    'async_timeout'
 ]
 
 setup_requirements = [ ]
