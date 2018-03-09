@@ -16,7 +16,8 @@ requirements = [
     'requests-html',
     'aiohttp',
     'asyncio',
-    'async_timeout'
+    'async_timeout',
+    'python-slugify'
 ]
 
 setup_requirements = [ ]
