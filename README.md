@@ -95,3 +95,5 @@ Or you can extract data from multiple pages that use the same template/markup:
 ```
 
 **Don't forget to escape your regex for JSON**
+
+Run `crawler --help` to see all CLI options.
