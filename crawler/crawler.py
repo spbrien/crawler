@@ -44,7 +44,7 @@ class Crawler():
         return r.html
 
     def find_from_json(self, json_data=None):
-        def text_content_for_key(value):
+        def text_content_for_key(html, value):
             if not isinstance(value, dict):
                 return [
                     {
@@ -53,7 +53,16 @@ class Crawler():
                     } for i in html.find(value)
                 ]
             else:
-                pass
+                children = value['children']
+                selector = value['selector']
+                return [{
+                    "text": i.text,
+                    "html": i.html,
+                    "children": {
+                        key: text_content_for_key(i, value)
+                        for key, value in children.items()
+                    }
+                } for i in html.find(selector)]
 
         data = self.json_data if self.json_data else self._parse(json_data)
         out = {}
@@ -68,7 +77,7 @@ class Crawler():
                     try:
                         html = self._get(item)
                         out[item] = {
-                            key: text_content_for_key(value)
+                            key: text_content_for_key(html, value)
                             for key, value in v.items()
                         }
                     except:
