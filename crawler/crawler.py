@@ -44,6 +44,21 @@ class Crawler():
         return r.html
 
     def find_from_json(self, json_data=None):
+        def transform_lists_and_nested(value):
+            if isinstance(value, list) and len(value) == 1:
+                return value[0]
+
+            if isinstance(value, list) \
+                and len(value) > 1 \
+                and not isinstance(value, str):
+                return [transform_lists_and_nested(i) for i in value]
+
+            if isinstance(value, dict):
+                if value.get('children', False):
+                    return transform_lists_and_nested(value['children'])
+
+            return value
+
         def text_content_for_key(html, value):
             if not isinstance(value, dict):
                 return [
@@ -82,4 +97,9 @@ class Crawler():
                         }
                     except:
                         pass
-        return out
+        return {
+            k: {
+                key: transform_lists_and_nested(value)
+                for key, value in v.items()
+            } for k, v in out.items()
+        }
