@@ -98,8 +98,6 @@ class Crawler():
         out = {}
 
         for k, v in data.items():
-            # Match all elements from self.links with regex in k
-            reg = re.compile('%s' % k)
             key_list = [i for i in filter(reg.match, self.links)]
 
             if len(key_list) > 0:

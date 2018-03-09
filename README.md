@@ -25,6 +25,8 @@ pip install git+git://github.com/spbrien/crawler.git#egg=crawler
 
 ## Config
 
+#### Simple
+
 Create a JSON config file called `config.json`:
 
 ```JSON
@@ -55,3 +57,41 @@ The output from the above config should be:
 }
 
 ```
+
+#### Complex
+
+You can have more complex configs, with nested data:
+
+```JSON
+{
+    "^http://www.some-website.com/$": {
+        "container": {
+            "selector": "body > div",
+            "children": {
+                "child-title": "h1",
+                "child-subtitle": "h3",
+                "child-text": "p"
+            }
+        },
+    }
+}
+```
+
+Or you can extract data from multiple pages that use the same template/markup:
+
+```JSON
+{
+    "^http://www.some-website.com/blog/page/\\d+$": {
+        "container": {
+            "selector": "body > div",
+            "children": {
+                "child-title": "h1",
+                "child-subtitle": "h3",
+                "child-text": "p"
+            }
+        },
+    }
+}
+```
+
+**Don't forget to escape your regex for JSON**
