@@ -6,9 +6,9 @@ import re
 
 from click import echo, style
 from requests_html import HTMLSession
+from requests_html import HTML
 
 from crawler.async_links import get_all_links
-
 
 """Main module."""
 

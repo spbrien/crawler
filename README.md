@@ -36,7 +36,7 @@ Create a JSON config file called `config.json`:
 }
 ```
 
-The top-level keys are regex expressions. The tool will pull a list of all pages available on the website, then crawl pages that match these regex expressions. For each expression, the crawler will extract text from the DOM according to the selectors in the provided schema.
+The top-level keys are regular expressions. The tool will pull a list of all pages available on the website, then crawl pages that match these regular expressions. For each expression, the crawler will extract text from the DOM according to the selectors in the provided schema.
 
 Run the tool:
 
